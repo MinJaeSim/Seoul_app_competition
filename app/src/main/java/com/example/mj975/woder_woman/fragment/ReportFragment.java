@@ -11,6 +11,8 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -36,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.mj975.woder_woman.R;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
@@ -65,6 +68,10 @@ public class ReportFragment extends Fragment {
 
     private ImageView photoButton;
     private EditText addressText;
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+
 
     @Nullable
     @Override

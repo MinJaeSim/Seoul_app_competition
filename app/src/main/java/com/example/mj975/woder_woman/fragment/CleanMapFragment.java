@@ -61,12 +61,12 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLng SEOUL = new LatLng(37.56, 126.97);
+        LatLng SEOUL = new LatLng(37.44221865909194, 127.15066515174043);
 
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(SEOUL)
-                .title("서울")
-                .snippet("한국의 수도");
+                .title("집")
+                .snippet("내 집");
         googleMap.addMarker(markerOptions);
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
