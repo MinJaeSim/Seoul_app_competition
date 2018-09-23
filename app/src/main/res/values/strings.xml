@@ -8,4 +8,6 @@
     <string name="menu_person">개인정보</string>
 
     <string name="string_close_warning"> 한 번 더 누르면 종료됩니다.</string>
+    <string name="report_title">의심 지역 신고</string>
+    <string name="main_title">원더 우먼</string>
 </resources>

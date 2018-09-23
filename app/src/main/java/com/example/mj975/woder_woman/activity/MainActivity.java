@@ -1,4 +1,4 @@
-package com.example.mj975.woder_woman;
+package com.example.mj975.woder_woman.activity;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.mj975.woder_woman.R;
 import com.example.mj975.woder_woman.fragment.CleanMapFragment;
 import com.example.mj975.woder_woman.fragment.MainFragment;
 import com.example.mj975.woder_woman.fragment.PersonFragment;
@@ -84,5 +85,4 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
-
 }

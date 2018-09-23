@@ -70,6 +70,6 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.addMarker(markerOptions);
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(20));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
     }
 }

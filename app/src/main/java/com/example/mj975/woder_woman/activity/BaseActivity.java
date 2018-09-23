@@ -1,8 +1,10 @@
-package com.example.mj975.woder_woman;
+package com.example.mj975.woder_woman.activity;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.mj975.woder_woman.R;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
