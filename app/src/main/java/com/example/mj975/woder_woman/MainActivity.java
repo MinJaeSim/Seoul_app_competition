@@ -42,18 +42,23 @@ public class MainActivity extends BaseActivity {
                 switch (item.getItemId()) {
                     case R.id.action_home:
                         fragment = new MainFragment();
+                        break;
                     case R.id.action_clean:
                         fragment = new CleanMapFragment();
+                        break;
                     case R.id.action_report:
                         fragment = new ReportFragment();
+                        break;
                     case R.id.action_relieved:
                         fragment = new ServiceFragment();
+                        break;
                     case R.id.action_person:
                         fragment = new PersonFragment();
+                        break;
                 }
 
                 fm.beginTransaction().replace(R.id.fragment_container, fragment).commit();
-                return false;
+                return true;
             }
         });
     }

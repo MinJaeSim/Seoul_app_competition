@@ -15,7 +15,7 @@ public class ServiceFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_main,container,false);
+        View v = inflater.inflate(R.layout.fragment_service,container,false);
 
         return v;
     }
