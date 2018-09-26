@@ -23,24 +23,28 @@ public class MainFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_main,container,false);
+        View v = inflater.inflate(R.layout.fragment_main, container, false);
 
         ViewPager viewPager = v.findViewById(R.id.viewPager);
 
-        ImageViewPageAdapter adapter = new ImageViewPageAdapter(getLayoutInflater(), new String[]{"","",""});
+        ImageViewPageAdapter adapter = new ImageViewPageAdapter(getLayoutInflater(), new String[]{"", "", ""});
         viewPager.setAdapter(adapter);
 
         RecyclerView dangerRecyclerView = v.findViewById(R.id.danger_view);
         RecyclerView expeditionRecyclerView = v.findViewById(R.id.expedition_view);
         RecyclerView myReportRecyclerView = v.findViewById(R.id.my_report_view);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        LinearLayoutManager layoutManagerDanger = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManagerExpedition = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManagerReport = new LinearLayoutManager(getContext());
 
-        dangerRecyclerView.setLayoutManager(layoutManager);
-        expeditionRecyclerView.setLayoutManager(layoutManager);
-        myReportRecyclerView.setLayoutManager(layoutManager);
+        layoutManagerDanger.setOrientation(LinearLayoutManager.HORIZONTAL);
+        layoutManagerExpedition.setOrientation(LinearLayoutManager.HORIZONTAL);
+        layoutManagerReport.setOrientation(LinearLayoutManager.HORIZONTAL);
 
+        dangerRecyclerView.setLayoutManager(layoutManagerDanger);
+        expeditionRecyclerView.setLayoutManager(layoutManagerExpedition);
+        myReportRecyclerView.setLayoutManager(layoutManagerReport);
 
 
         TabLayout tabLayout = v.findViewById(R.id.tab_dots);

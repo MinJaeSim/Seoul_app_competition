@@ -25,7 +25,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDYppBAKldAYJ6FlaD8qKgC6WcoEGwp3f0" />
 
-        <activity android:name=".activity.MainActivity"/>
+        <activity android:name=".activity.MainActivity" />
 
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
@@ -44,6 +44,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <activity android:name=".activity.SignInActivity" />
+        <activity android:name=".activity.SignUpActivity" />
     </application>
 
 </manifest>

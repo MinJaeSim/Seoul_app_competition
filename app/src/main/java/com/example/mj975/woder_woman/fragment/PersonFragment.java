@@ -27,10 +27,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mj975.woder_woman.R;
+import com.example.mj975.woder_woman.activity.SignInActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,8 +57,13 @@ public class PersonFragment extends Fragment {
     private static final int CROP_FROM_CAMERA = 3;
 
     private static final int MULTIPLE_PERMISSIONS = 101;
+    private static final int LOGIN = 8;
 
     private ImageView photoButton;
+    private Button loginButton;
+    private LinearLayout linearLayout;
+
+    private FirebaseUser user;
 
     @Nullable
     @Override
@@ -69,7 +78,29 @@ public class PersonFragment extends Fragment {
             setPopupMenu();
         });
 
+        loginButton = v.findViewById(R.id.login_button);
+        loginButton.setOnClickListener(view -> {
+            Intent i = new Intent(getActivity(), SignInActivity.class);
+            startActivityForResult(i, LOGIN);
+        });
+        linearLayout = v.findViewById(R.id.profile);
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            loginButton.setVisibility(View.GONE);
+            linearLayout.setVisibility(View.VISIBLE);
+        } else {
+            loginButton.setVisibility(View.VISIBLE);
+            linearLayout.setVisibility(View.GONE);
+        }
+
         TextView logOutButton = v.findViewById(R.id.log_out);
+        logOutButton.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            loginButton.setVisibility(View.VISIBLE);
+            linearLayout.setVisibility(View.GONE);
+        });
+
         TextView signOutButton = v.findViewById(R.id.sign_out);
 
         TextView inquiryButton = v.findViewById(R.id.inquiry_button);
@@ -77,6 +108,7 @@ public class PersonFragment extends Fragment {
 
         return v;
     }
+
 
     private void checkPermissions() {
         List<String> permissionList = new ArrayList<>();
@@ -170,6 +202,14 @@ public class PersonFragment extends Fragment {
                     photoButton.setImageURI(photoUri);
                 } catch (Exception e) {
                     Log.e("ERROR", e.getMessage());
+                }
+            } else if (requestCode == LOGIN) {
+                if (user != null) {
+                    loginButton.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.VISIBLE);
+                } else {
+                    loginButton.setVisibility(View.VISIBLE);
+                    linearLayout.setVisibility(View.GONE);
                 }
             }
         }

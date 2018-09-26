@@ -11,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.mj975.woder_woman.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +45,12 @@ public class SplashActivity extends AppCompatActivity {
 
         checkPermissions();
 
-        try {
-            TimeUnit.SECONDS.sleep(2);
-            Intent i = new Intent(this, MainActivity.class);
-            startActivity(i);
-            finish();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+
+
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+        finish();
     }
 
     private void checkPermissions() {
