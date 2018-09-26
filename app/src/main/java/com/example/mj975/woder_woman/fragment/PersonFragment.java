@@ -69,11 +69,11 @@ public class PersonFragment extends Fragment {
             setPopupMenu();
         });
 
-        Button logOutButton = v.findViewById(R.id.log_out);
-        Button signOutButton = v.findViewById(R.id.sign_out);
+        TextView logOutButton = v.findViewById(R.id.log_out);
+        TextView signOutButton = v.findViewById(R.id.sign_out);
 
-        Button inquiryButton = v.findViewById(R.id.inquiry_button);
-        Button openSourceButton = v.findViewById(R.id.open_source_button);
+        TextView inquiryButton = v.findViewById(R.id.inquiry_button);
+        TextView openSourceButton = v.findViewById(R.id.open_source_button);
 
         return v;
     }

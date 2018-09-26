@@ -12,7 +12,7 @@ import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
+import android.location.LocationListener;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -38,7 +38,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.mj975.woder_woman.R;
-import com.google.android.gms.location.LocationListener;
+import com.example.mj975.woder_woman.util.GPSUtil;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
@@ -69,17 +69,31 @@ public class ReportFragment extends Fragment {
     private ImageView photoButton;
     private EditText addressText;
 
-    private LocationManager locationManager;
-    private LocationListener locationListener;
+    private final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            longitude = location.getLongitude(); //경도
+            latitude = location.getLatitude();   //위도
+        }
 
+        public void onProviderDisabled(String provider) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    };
+
+    private double longitude;
+    private double latitude;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_report, container, false);
 
-        LatLng SEOUL = new LatLng(37.56, 126.97);
-//        getAddress(getActivity(), SEOUL.latitude, SEOUL.longitude);
+        GPSUtil.ENABLE_GPS_INFO(getActivity(), locationListener);
 
         addressText = v.findViewById(R.id.text_address);
         EditText detailAddressText = v.findViewById(R.id.text_detail_address);
@@ -87,9 +101,8 @@ public class ReportFragment extends Fragment {
 
         Button getAddressButton = v.findViewById(R.id.get_address);
         getAddressButton.setOnClickListener(view -> {
-            getAddress(getActivity(), SEOUL.latitude, SEOUL.longitude);
+            getAddress(getActivity(), latitude, longitude);
         });
-
 
         photoButton = v.findViewById(R.id.report_image_view);
 
@@ -131,6 +144,46 @@ public class ReportFragment extends Fragment {
         }
         return nowAddress;
     }
+
+//    button.setOnClickListener(new Button.OnClickListener(){
+//        @Override
+//        public void onClick(View v){
+//            String str=editText.getText().toString();
+//            List<Address> addressList = null;
+//            try {
+//                // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
+//                addressList = geocoder.getFromLocationName(
+//                        str, // 주소
+//                        10); // 최대 검색 결과 개수
+//            }
+//            catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            System.out.println(addressList.get(0).toString());
+//            // 콤마를 기준으로 split
+//            String []splitStr = addressList.get(0).toString().split(",");
+//            String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1,splitStr[0].length() - 2); // 주소
+//            System.out.println(address);
+//
+//            String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
+//            String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
+//            System.out.println(latitude);
+//            System.out.println(longitude);
+//
+//            // 좌표(위도, 경도) 생성
+//            LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+//            // 마커 생성
+//            MarkerOptions mOptions2 = new MarkerOptions();
+//            mOptions2.title("search result");
+//            mOptions2.snippet(address);
+//            mOptions2.position(point);
+//            // 마커 추가
+//            mMap.addMarker(mOptions2);
+//            // 해당 좌표로 화면 줌
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
+//        }
+//    });
 
     private void showAddressDialog(List<Address> ListItems) {
         CharSequence[] items = new String[ListItems.size()];
@@ -225,9 +278,7 @@ public class ReportFragment extends Fragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File photoFile = null;
         try {
-            System.out.println("asdf");
             photoFile = createImageFile();
-            System.out.println("qwer");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -251,7 +302,7 @@ public class ReportFragment extends Fragment {
 
         String timeStamp = new SimpleDateFormat("HHmmss").format(new Date());
         String imageFileName = "IP" + timeStamp + "_";
-        File storageDir = new File(Environment.getExternalStorageDirectory() + "/test/"); //test라는 경로에 이미지를 저장하기 위함
+        File storageDir = new File(Environment.getExternalStorageDirectory() + "/wonder_woman_pic/"); //test라는 경로에 이미지를 저장하기 위함
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
@@ -355,5 +406,11 @@ public class ReportFragment extends Fragment {
             i.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
             startActivityForResult(i, CROP_FROM_CAMERA);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        GPSUtil.DISABLE_GPS(locationListener);
+        super.onDestroy();
     }
 }
