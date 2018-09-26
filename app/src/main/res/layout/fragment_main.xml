@@ -75,6 +75,7 @@
 
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/danger_view"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:layout_marginEnd="2dp"
@@ -110,6 +111,7 @@
                     android:textSize="24sp" />
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/expedition_view"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:layout_marginEnd="2dp"
@@ -144,6 +146,8 @@
                     android:textSize="24sp" />
 
                 <android.support.v7.widget.RecyclerView
+
+                    android:id="@+id/my_report_view"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:layout_marginEnd="2dp"
