@@ -32,9 +32,9 @@ public class ImageViewPageAdapter extends PagerAdapter {
         ImageView imageView = view.findViewById(R.id.viewpager_image_view);
 
         Glide.with(imageView)
-                .load(R.drawable.ic_home)
+                .load(resources[position])
                 .apply(new RequestOptions()
-                        .centerCrop()
+                        .centerInside()
                 )
                 .into(imageView);
 
@@ -56,5 +56,9 @@ public class ImageViewPageAdapter extends PagerAdapter {
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
+    }
+
+    public void setResources(String[] resources) {
+        this.resources = resources;
     }
 }

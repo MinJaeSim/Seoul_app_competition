@@ -12,14 +12,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mj975.woder_woman.R;
+import com.example.mj975.woder_woman.data.Toilet;
 import com.example.mj975.woder_woman.util.GPSUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import net.sharewire.googlemapsclustering.Cluster;
+import net.sharewire.googlemapsclustering.ClusterManager;
+import net.sharewire.googlemapsclustering.DefaultIconGenerator;
+import net.sharewire.googlemapsclustering.IconGenerator;
+
+import java.util.ArrayList;
 
 public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -44,14 +54,19 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
     private double longitude;
     private double latitude;
 
+    ClusterManager<Toilet> clusterManager;
     private MapView mapView;
     private GoogleMap googleMap;
     private LatLng myPosition;
+
+    private ArrayList<Toilet> toilets;
+    private Bundle bundle;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_clean_map, container, false);
+        bundle = getArguments();
 
         MapsInitializer.initialize(getActivity().getApplicationContext());
 
@@ -109,18 +124,22 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 //        LatLng SEOUL = new LatLng(latitude,longitude);
         GPSUtil.ENABLE_GPS_INFO(getActivity(), locationListener);
-        LatLng SEOUL = new LatLng(37.56, 126.97);
         this.googleMap = googleMap;
 
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(SEOUL)
-                .title("집")
-                .snippet("내 집");
-        googleMap.addMarker(markerOptions);
+        clusterManager = new ClusterManager<>(getActivity().getBaseContext(), this.googleMap);
+        clusterManager.setIconGenerator(new com.example.mj975.woder_woman.util.DefaultIconGenerator<>(getContext()));
+        LatLng SEOUL = new LatLng(37.56, 126.97);
+
+        this.googleMap.setOnCameraIdleListener(clusterManager);
+//        this.googleMap.setOnMarkerClickListener(clusterManager);
+
+        if (bundle != null && bundle.getSerializable("TOILETS") != null) {
+            toilets = (ArrayList<Toilet>) getArguments().getSerializable("TOILETS");
+
+            clusterManager.setItems(toilets);
+        }
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
-
-        System.out.println("test test");
     }
 }

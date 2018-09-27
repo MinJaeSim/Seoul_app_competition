@@ -15,10 +15,14 @@ import android.widget.LinearLayout;
 
 import com.example.mj975.woder_woman.R;
 import com.example.mj975.woder_woman.adpater.ImageViewPageAdapter;
+import com.example.mj975.woder_woman.data.Event;
+
+import java.util.ArrayList;
 
 public class MainFragment extends Fragment {
 
     private static final String URL = "http://www.seoul.go.kr/";
+    private ArrayList<Event> events;
 
     @Nullable
     @Override
@@ -27,8 +31,21 @@ public class MainFragment extends Fragment {
 
         ViewPager viewPager = v.findViewById(R.id.viewPager);
 
-        ImageViewPageAdapter adapter = new ImageViewPageAdapter(getLayoutInflater(), new String[]{"", "", ""});
+        String[] src = {""};
+
+        ImageViewPageAdapter adapter = new ImageViewPageAdapter(getLayoutInflater(), src);
         viewPager.setAdapter(adapter);
+
+        Bundle bundle = getArguments();
+        if (bundle != null && bundle.getSerializable("EVENTS") != null) {
+            events = (ArrayList<Event>) getArguments().getSerializable("EVENTS");
+            src = new String[events.size()];
+            for (int i = 0; i < events.size(); i++)
+                src[i] = events.get(i).getSrc();
+            adapter.setResources(src);
+            adapter.notifyDataSetChanged();
+        }
+
 
         RecyclerView dangerRecyclerView = v.findViewById(R.id.danger_view);
         RecyclerView expeditionRecyclerView = v.findViewById(R.id.expedition_view);
