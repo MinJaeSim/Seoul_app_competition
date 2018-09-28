@@ -1,4 +1,4 @@
-package com.example.mj975.woder_woman.util;
+package com.example.mj975.woder_woman.service;
 
 import com.example.mj975.woder_woman.data.Event;
 import com.example.mj975.woder_woman.data.Toilet;

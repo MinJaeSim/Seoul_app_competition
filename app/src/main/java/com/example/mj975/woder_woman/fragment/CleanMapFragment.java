@@ -19,15 +19,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import net.sharewire.googlemapsclustering.Cluster;
 import net.sharewire.googlemapsclustering.ClusterManager;
-import net.sharewire.googlemapsclustering.DefaultIconGenerator;
-import net.sharewire.googlemapsclustering.IconGenerator;
 
 import java.util.ArrayList;
 
@@ -127,7 +121,7 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
         this.googleMap = googleMap;
 
         clusterManager = new ClusterManager<>(getActivity().getBaseContext(), this.googleMap);
-        clusterManager.setIconGenerator(new com.example.mj975.woder_woman.util.DefaultIconGenerator<>(getContext()));
+        clusterManager.setIconGenerator(new com.example.mj975.woder_woman.service.DefaultIconGenerator<>(getContext()));
         LatLng SEOUL = new LatLng(37.56, 126.97);
 
         this.googleMap.setOnCameraIdleListener(clusterManager);

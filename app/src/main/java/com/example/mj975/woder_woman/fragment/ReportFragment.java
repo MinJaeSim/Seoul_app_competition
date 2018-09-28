@@ -2,6 +2,7 @@ package com.example.mj975.woder_woman.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -35,11 +37,25 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.mj975.woder_woman.R;
+import com.example.mj975.woder_woman.data.Report;
 import com.example.mj975.woder_woman.util.GPSUtil;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 public class ReportFragment extends Fragment {
 
@@ -68,6 +85,7 @@ public class ReportFragment extends Fragment {
 
     private ImageView photoButton;
     private EditText addressText;
+    private FirebaseFirestore db;
 
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
@@ -87,6 +105,8 @@ public class ReportFragment extends Fragment {
 
     private double longitude;
     private double latitude;
+    private String uploadUrl;
+    private ProgressDialog dialog;
 
     @Nullable
     @Override
@@ -113,10 +133,67 @@ public class ReportFragment extends Fragment {
 
         Button reportButton = v.findViewById(R.id.report_button);
         reportButton.setOnClickListener(view -> {
-            showReportDialog();
+            String addr = addressText.getText().toString();
+            String detailAddr = detailAddressText.getText().toString();
+            String content = infoText.getText().toString();
+            if (addr.length() > 0
+                    && detailAddr.length() > 0
+                    && content.length() > 0) {
+
+                dialog = new ProgressDialog(getContext());
+                dialog.setMessage("신고 진행 중 입니다.");
+                dialog.show();
+
+                Report report = new Report(addr, detailAddr, content, "");
+                showReportDialog(report);
+
+            } else
+                Snackbar.make(view, "내용을 입력해 주세요", Snackbar.LENGTH_SHORT).show();
         });
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            reportButton.setBackgroundColor(getResources().getColor(R.color.colorGray));
+            reportButton.setEnabled(false);
+            reportButton.setText("로그인 해주세요");
+        }
+        db = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+        db.setFirestoreSettings(settings);
+
         return v;
+    }
+
+    private void uploadImages(Uri photoUri, Report report) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageReference = storage.getReferenceFromUrl("gs://aunager.appspot.com").child("report").child(generateTempFilename());
+        storageReference.putFile(photoUri).continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                dialog.dismiss();
+                Snackbar.make(getView(), "신고에 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
+            }
+            return storageReference.getDownloadUrl();
+        }).addOnCompleteListener(task -> {
+            uploadUrl = task.getResult().toString();
+            report.setUri(uploadUrl);
+
+            db.collection("Report").document()
+                    .set(report)
+                    .addOnSuccessListener(aVoid -> {
+                        dialog.dismiss();
+                        Snackbar.make(getView(), "신고에 성공하였습니다.", Snackbar.LENGTH_SHORT).show();
+                    }).addOnFailureListener(e -> {
+                dialog.dismiss();
+                Snackbar.make(getView(), "신고에 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
+            });
+        });
+    }
+
+    private String generateTempFilename() {
+        return UUID.randomUUID().toString();
     }
 
     public String getAddress(Context context, double lat, double lng) {
@@ -128,7 +205,6 @@ public class ReportFragment extends Fragment {
                 address = geocoder.getFromLocation(lat, lng, 5);
 
                 if (address != null && address.size() > 0) {
-                    // 주소 받아오기
                     nowAddress = address.get(0).getAddressLine(0);
                     for (int i = 0; i < address.size(); i++) {
                         System.out.println(address.get(i).getAddressLine(0));
@@ -145,45 +221,6 @@ public class ReportFragment extends Fragment {
         return nowAddress;
     }
 
-//    button.setOnClickListener(new Button.OnClickListener(){
-//        @Override
-//        public void onClick(View v){
-//            String str=editText.getText().toString();
-//            List<Address> addressList = null;
-//            try {
-//                // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
-//                addressList = geocoder.getFromLocationName(
-//                        str, // 주소
-//                        10); // 최대 검색 결과 개수
-//            }
-//            catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            System.out.println(addressList.get(0).toString());
-//            // 콤마를 기준으로 split
-//            String []splitStr = addressList.get(0).toString().split(",");
-//            String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1,splitStr[0].length() - 2); // 주소
-//            System.out.println(address);
-//
-//            String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
-//            String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
-//            System.out.println(latitude);
-//            System.out.println(longitude);
-//
-//            // 좌표(위도, 경도) 생성
-//            LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-//            // 마커 생성
-//            MarkerOptions mOptions2 = new MarkerOptions();
-//            mOptions2.title("search result");
-//            mOptions2.snippet(address);
-//            mOptions2.position(point);
-//            // 마커 추가
-//            mMap.addMarker(mOptions2);
-//            // 해당 좌표로 화면 줌
-//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
-//        }
-//    });
 
     private void showAddressDialog(List<Address> ListItems) {
         CharSequence[] items = new String[ListItems.size()];
@@ -198,46 +235,47 @@ public class ReportFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("주소 목록");
         builder.setSingleChoiceItems(items, defaultItem,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SelectedItems.clear();
-                        SelectedItems.add(which);
-                    }
+                (dialog, which) -> {
+                    SelectedItems.clear();
+                    SelectedItems.add(which);
                 });
         builder.setPositiveButton("선택",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!SelectedItems.isEmpty()) {
-                            int index = (int) SelectedItems.get(0);
-                            address = ListItems.get(index).getAddressLine(0);
-                            addressText.setText(address);
-                        }
+                (dialog, which) -> {
+                    if (!SelectedItems.isEmpty()) {
+                        int index = (int) SelectedItems.get(0);
+                        address = ListItems.get(index).getAddressLine(0);
+                        addressText.setText(address);
                     }
                 });
         builder.setNegativeButton("취소",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+                (dialog, which) -> {
 
-                    }
                 });
         builder.show();
     }
 
-    void showReportDialog() {
+    private void showReportDialog(Report report) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("신고 하기");
         builder.setMessage("이 내용을 바탕으로 신고 하시겠습니까?");
         builder.setPositiveButton("예",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
+                (dialog, which) -> {
+                    if (photoUri != null) {
+                        uploadImages(photoUri, report);
+                    } else {
+                        db.collection("Report").document()
+                                .set(report)
+                                .addOnSuccessListener(aVoid -> {
+                                    dialog.dismiss();
+                                    Snackbar.make(getView(), "신고에 성공하였습니다.", Snackbar.LENGTH_SHORT).show();
+                                }).addOnFailureListener(e -> {
+                            dialog.dismiss();
+                            Snackbar.make(getView(), "신고에 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
+                        });
                     }
                 });
         builder.setNegativeButton("아니오",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
+                (dialog, which) -> {
                 });
         builder.show();
     }

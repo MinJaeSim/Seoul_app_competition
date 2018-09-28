@@ -1,5 +1,6 @@
 package com.example.mj975.woder_woman.activity;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,10 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.mj975.woder_woman.R;
+import com.example.mj975.woder_woman.data.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignUpActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,16 +27,12 @@ public class SignUpActivity extends AppCompatActivity {
         FirebaseAuth auth;
 
         EditText emailEditText = findViewById(R.id.enroll_email_edit);
+        EditText nameEditText = findViewById(R.id.enroll_name_edit);
+        EditText ageEditText = findViewById(R.id.enroll_age_edit);
         EditText passwordEditText = findViewById(R.id.enroll_password_edit);
         EditText passwordConfirmEditText = findViewById(R.id.pass_word_confirm_edit);
 
         Button signUp = findViewById(R.id.button_sign_up);
-
-        if(emailEditText.getText().toString().length() <1) {
-            signUp.setEnabled(false);
-            signUp.setText("이메일을 입력해주세요");
-            signUp.setBackgroundColor(Color.rgb(220, 10, 10));
-        }
 
         passwordConfirmEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -63,19 +63,45 @@ public class SignUpActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         signUp.setOnClickListener(view -> {
-            String email = emailEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
-            auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, task -> {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = auth.getCurrentUser();
-                            finish();
-                        } else {
-                            Snackbar.make(view, "회원가입에 실패하였습니다.",
-                                    Snackbar.LENGTH_SHORT).show();
-                        }
-                    });
-        });
+            if (emailEditText.getText().length() > 0 &&
+                    passwordConfirmEditText.getText().length() > 0 &&
+                    nameEditText.getText().length() > 0 &&
+                    ageEditText.getText().length() > 0) {
+                String email = emailEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+                String name = nameEditText.getText().toString();
+                int age = Integer.parseInt(ageEditText.getText().toString());
 
+                ProgressDialog dialog = new ProgressDialog(this);
+                dialog.setMessage("회원 가입 진행 중입니다.");
+                dialog.show();
+
+                auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this, task -> {
+                            if (task.isSuccessful()) {
+                                User user = new User(email, name, age, "");
+
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                db.collection("User").document()
+                                        .set(user)
+                                        .addOnSuccessListener(aVoid -> {
+                                            dialog.dismiss();
+                                            Snackbar.make(view, "회원가입에 성공하였습니다.", Snackbar.LENGTH_SHORT).show();
+                                        }).addOnFailureListener(e -> {
+                                    dialog.dismiss();
+                                    Snackbar.make(view, "회원가입에 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
+                                });
+                                finish();
+                            } else {
+                                Snackbar.make(view, "회원가입에 실패하였습니다.",
+                                        Snackbar.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        });
+            } else {
+                Snackbar.make(view, "빈칸을 입력해주세요.",
+                        Snackbar.LENGTH_SHORT).show();
+            }
+        });
     }
 }

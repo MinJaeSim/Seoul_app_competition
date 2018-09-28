@@ -39,6 +39,46 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/enroll_name_edit_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/enroll_password_edit_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <EditText
+                android:id="@+id/enroll_name_edit"
+                fontPath="fonts/BMJUA.otf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="이름을 입력해 주세요"
+                android:inputType="textEmailAddress" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/enroll_age_edit_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/enroll_password_edit_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <EditText
+                android:id="@+id/enroll_age_edit"
+                fontPath="fonts/BMJUA.otf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="나이를 입력해 주세요"
+                android:inputType="numberDecimal" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/enroll_email_edit_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

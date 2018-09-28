@@ -1,4 +1,4 @@
-package com.example.mj975.woder_woman.util;
+package com.example.mj975.woder_woman.service;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -22,11 +22,7 @@ import net.sharewire.googlemapsclustering.ClusterItem;
 import net.sharewire.googlemapsclustering.IconGenerator;
 import net.sharewire.googlemapsclustering.IconStyle;
 
-/**
- * The implementation of {@link IconGenerator} that generates icons with the default style
- * and caches them for subsequent use. To customize the style of generated icons use
- * {@link DefaultIconGenerator#setIconStyle(IconStyle)}.
- */
+
 public class DefaultIconGenerator<T extends ClusterItem> implements IconGenerator<T> {
 
     private static final int[] CLUSTER_ICON_BUCKETS = {10, 20, 50, 100, 500, 1000, 5000, 10000, 20000};

@@ -1,6 +1,5 @@
 package com.example.mj975.woder_woman.activity;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,7 +17,7 @@ import com.example.mj975.woder_woman.fragment.MainFragment;
 import com.example.mj975.woder_woman.fragment.PersonFragment;
 import com.example.mj975.woder_woman.fragment.ReportFragment;
 import com.example.mj975.woder_woman.fragment.ServiceFragment;
-import com.example.mj975.woder_woman.util.DatabaseClient;
+import com.example.mj975.woder_woman.service.DatabaseClient;
 
 import java.io.IOException;
 import java.util.ArrayList;

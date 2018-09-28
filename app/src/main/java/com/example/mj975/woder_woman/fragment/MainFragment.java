@@ -1,5 +1,7 @@
 package com.example.mj975.woder_woman.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +26,7 @@ public class MainFragment extends Fragment {
     private static final String URL = "http://www.seoul.go.kr/";
     private ArrayList<Event> events;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,10 +42,21 @@ public class MainFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null && bundle.getSerializable("EVENTS") != null) {
             events = (ArrayList<Event>) getArguments().getSerializable("EVENTS");
+
             src = new String[events.size()];
-            for (int i = 0; i < events.size(); i++)
+            String[] href = new String[events.size()];
+            for (int i = 0; i < events.size(); i++) {
                 src[i] = events.get(i).getSrc();
+                href[i] = events.get(i).getHref();
+            }
+
             adapter.setResources(src);
+            adapter.setOnItemClickListener(position -> {
+                Intent browserIntent = new Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(href[position]));
+                startActivity(browserIntent);
+            });
             adapter.notifyDataSetChanged();
         }
 
