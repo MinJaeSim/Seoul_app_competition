@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -37,25 +36,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.mj975.woder_woman.R;
+import com.example.mj975.woder_woman.data.Event;
 import com.example.mj975.woder_woman.data.Report;
 import com.example.mj975.woder_woman.util.GPSUtil;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,22 +79,6 @@ public class ReportFragment extends Fragment {
     private EditText addressText;
     private FirebaseFirestore db;
 
-    private final LocationListener locationListener = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            longitude = location.getLongitude(); //경도
-            latitude = location.getLatitude();   //위도
-        }
-
-        public void onProviderDisabled(String provider) {
-        }
-
-        public void onProviderEnabled(String provider) {
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-    };
-
     private double longitude;
     private double latitude;
     private String uploadUrl;
@@ -113,11 +89,17 @@ public class ReportFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_report, container, false);
 
-        GPSUtil.ENABLE_GPS_INFO(getActivity(), locationListener);
-
         addressText = v.findViewById(R.id.text_address);
         EditText detailAddressText = v.findViewById(R.id.text_detail_address);
         EditText infoText = v.findViewById(R.id.text_info);
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            latitude = bundle.getDouble("LAT", 37.56);
+            longitude = bundle.getDouble("LNG", 126.97);
+            System.out.println("TEST1 " + latitude);
+            System.out.println("TEST2 " + longitude);
+        }
 
         Button getAddressButton = v.findViewById(R.id.get_address);
         getAddressButton.setOnClickListener(view -> {
@@ -206,9 +188,6 @@ public class ReportFragment extends Fragment {
 
                 if (address != null && address.size() > 0) {
                     nowAddress = address.get(0).getAddressLine(0);
-                    for (int i = 0; i < address.size(); i++) {
-                        System.out.println(address.get(i).getAddressLine(0));
-                    }
                     showAddressDialog(address);
                 }
             }
@@ -448,7 +427,6 @@ public class ReportFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        GPSUtil.DISABLE_GPS(locationListener);
         super.onDestroy();
     }
 }

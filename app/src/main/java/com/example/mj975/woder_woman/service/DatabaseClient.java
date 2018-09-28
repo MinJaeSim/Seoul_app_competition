@@ -26,7 +26,7 @@ public class DatabaseClient implements DatabaseAPI {
                 .client(client)
                 .addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl("http://52.194.255.212:8888/a/").build();
+                .baseUrl("http://52.199.117.247:8888/a/").build();
 
         api = retrofit.create(DatabaseAPI.class);
     }
@@ -39,6 +39,11 @@ public class DatabaseClient implements DatabaseAPI {
     @Override
     public Call<ArrayList<Toilet>> getAllToilets() {
         return api.getAllToilets();
+    }
+
+    @Override
+    public Call<ArrayList<Toilet>> getNearToilets(float lat, float lng) {
+        return api.getNearToilets(lat, lng);
     }
 
     private static class SingleTon {

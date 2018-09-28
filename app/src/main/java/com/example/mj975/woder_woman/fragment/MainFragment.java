@@ -14,18 +14,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.mj975.woder_woman.R;
+import com.example.mj975.woder_woman.adpater.DangerZoneAdapter;
 import com.example.mj975.woder_woman.adpater.ImageViewPageAdapter;
 import com.example.mj975.woder_woman.data.Event;
+import com.example.mj975.woder_woman.data.Toilet;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
 public class MainFragment extends Fragment {
 
-    private static final String URL = "http://www.seoul.go.kr/";
     private ArrayList<Event> events;
-
+    private ArrayList<Toilet> toilets;
 
     @Nullable
     @Override
@@ -34,14 +38,17 @@ public class MainFragment extends Fragment {
 
         ViewPager viewPager = v.findViewById(R.id.viewPager);
 
+        Toast.makeText(getContext(), FirebaseAuth.getInstance().getCurrentUser().getEmail().toString(), Toast.LENGTH_SHORT).show();
+
         String[] src = {""};
 
         ImageViewPageAdapter adapter = new ImageViewPageAdapter(getLayoutInflater(), src);
         viewPager.setAdapter(adapter);
 
         Bundle bundle = getArguments();
+
         if (bundle != null && bundle.getSerializable("EVENTS") != null) {
-            events = (ArrayList<Event>) getArguments().getSerializable("EVENTS");
+            events = (ArrayList<Event>) bundle.getSerializable("EVENTS");
 
             src = new String[events.size()];
             String[] href = new String[events.size()];
@@ -58,6 +65,12 @@ public class MainFragment extends Fragment {
                 startActivity(browserIntent);
             });
             adapter.notifyDataSetChanged();
+        }
+
+        if (bundle != null && bundle.getSerializable("NEAR") != null) {
+            System.out.println("TEST");
+            toilets = (ArrayList<Toilet>) bundle.getSerializable("NEAR");
+            System.out.println(toilets.size());
         }
 
 
@@ -77,6 +90,9 @@ public class MainFragment extends Fragment {
         expeditionRecyclerView.setLayoutManager(layoutManagerExpedition);
         myReportRecyclerView.setLayoutManager(layoutManagerReport);
 
+        DangerZoneAdapter dangerZoneAdapter = new DangerZoneAdapter();
+        dangerZoneAdapter.setItems(toilets);
+        dangerRecyclerView.setAdapter(dangerZoneAdapter);
 
         TabLayout tabLayout = v.findViewById(R.id.tab_dots);
         tabLayout.setupWithViewPager(viewPager);

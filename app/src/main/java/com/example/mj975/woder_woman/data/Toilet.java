@@ -10,6 +10,9 @@ import net.sharewire.googlemapsclustering.ClusterItem;
 
 import java.io.Serializable;
 
+
+
+
 public class Toilet implements Serializable, ClusterItem {
     @SerializedName("naddress")
     private String newAddr;

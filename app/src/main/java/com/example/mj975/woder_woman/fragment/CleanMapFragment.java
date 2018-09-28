@@ -1,5 +1,6 @@
 package com.example.mj975.woder_woman.fragment;
 
+import android.app.ProgressDialog;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import net.sharewire.googlemapsclustering.ClusterManager;
 
@@ -34,6 +36,9 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
             System.out.println("test lng " + longitude);
             System.out.println("test lat " + latitude);
             myPosition = new LatLng(latitude, longitude);
+
+            dialog.dismiss();
+            gpsButton.setEnabled(true);
         }
 
         public void onProviderDisabled(String provider) {
@@ -53,8 +58,11 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap googleMap;
     private LatLng myPosition;
 
+    private FloatingActionButton gpsButton;
+
     private ArrayList<Toilet> toilets;
     private Bundle bundle;
+    private ProgressDialog dialog;
 
     @Nullable
     @Override
@@ -62,15 +70,14 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
         View v = inflater.inflate(R.layout.fragment_clean_map, container, false);
         bundle = getArguments();
 
+        dialog = new ProgressDialog(getContext());
+        dialog.setMessage("데이터를 읽어오는 중입니다.");
+        dialog.show();
+
         MapsInitializer.initialize(getActivity().getApplicationContext());
 
-        FloatingActionButton gpsButton = v.findViewById(R.id.find_location_button);
-        gpsButton.setOnClickListener(view -> {
-//            GPSUtil.DISABLE_GPS(locationListener);
-//            GPSUtil.ENABLE_GPS_INFO(getActivity(), locationListener);
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
-        });
+        gpsButton = v.findViewById(R.id.find_location_button);
+        gpsButton.setEnabled(false);
 
         mapView = v.findViewById(R.id.map_view);
 
@@ -78,6 +85,14 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
         mapView.onResume();
 
         mapView.getMapAsync(this);
+
+        gpsButton.setOnClickListener(view -> {
+            if (googleMap != null) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+            }
+        });
+
 
         return v;
     }
@@ -103,7 +118,7 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onDestroy() {
-        GPSUtil.DISABLE_GPS(locationListener);
+//        GPSUtil.DISABLE_GPS(locationListener);
         super.onDestroy();
         mapView.onDestroy();
     }
@@ -125,7 +140,12 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
         LatLng SEOUL = new LatLng(37.56, 126.97);
 
         this.googleMap.setOnCameraIdleListener(clusterManager);
-//        this.googleMap.setOnMarkerClickListener(clusterManager);
+        this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                return false;
+            }
+        });
 
         if (bundle != null && bundle.getSerializable("TOILETS") != null) {
             toilets = (ArrayList<Toilet>) getArguments().getSerializable("TOILETS");

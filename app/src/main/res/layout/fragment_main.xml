@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="근처 위험지역"
+                    android:text="근처 안심 지역"
                     android:textAlignment="textStart"
                     android:textSize="24sp" />
 

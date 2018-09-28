@@ -24,14 +24,17 @@ public abstract class AbstractRecyclerAdapter<T> extends RecyclerView.Adapter<Ab
     }
 
     public AbstractRecyclerAdapter() {
-        items = new ArrayList<>();
+    }
+
+    public AbstractRecyclerAdapter(List<T> items) {
+        this.items = items;
     }
 
     @Override
     public void onBindViewHolder(@NonNull final AbstractViewHolder holder, final int position) {
         holder.onBindView(getItem(holder.getAdapterPosition()), position);
         holder.itemView.setOnClickListener(v -> {
-            if(onItemClickListener != null) {
+            if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(getItem(position), position);
             }
         });

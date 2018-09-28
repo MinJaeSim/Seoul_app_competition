@@ -17,4 +17,14 @@ public interface DatabaseAPI {
 
     @GET("toilet/all")
     Call<ArrayList<Toilet>> getAllToilets();
+
+    @GET("toilet/near")
+    Call<ArrayList<Toilet>> getNearToilets(@Query("lat") float lat, @Query("lng") float lng);
+
+//    @GET("deli/all")
+//    Call<ArrayList<Toilet>> getAllToilets();
+//
+//    @GET("toilet/all")
+//    Call<ArrayList<Toilet>> getAllToilets();
+
 }
