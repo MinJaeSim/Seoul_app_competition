@@ -118,7 +118,7 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onDestroy() {
-//        GPSUtil.DISABLE_GPS(locationListener);
+        GPSUtil.DISABLE_GPS(locationListener);
         super.onDestroy();
         mapView.onDestroy();
     }

@@ -27,6 +27,14 @@ public class SplashActivity extends AppCompatActivity {
 
     private Intent i;
 
+    private String[] permissions = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.CALL_PHONE,
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION}; //권한 설정 변수
+
     private float longitude;
     private float latitude;
 
@@ -34,7 +42,6 @@ public class SplashActivity extends AppCompatActivity {
         public void onLocationChanged(Location location) {
             longitude = (float) location.getLongitude(); //경도
             latitude = (float) location.getLatitude();   //위도
-            System.out.println("TEST");
             new BackgroundSplashTask().execute();
         }
 
@@ -52,7 +59,17 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         i = new Intent(SplashActivity.this, MainActivity.class);
-        GPSUtil.ENABLE_GPS_INFO(this, locationListener);
+        if (Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(
+                        this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                        this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+        }
+        checkPermissions();
+
+
     }
 
     private class BackgroundSplashTask extends AsyncTask<Void, Void, Void> {
@@ -113,6 +130,21 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(i);
             finish();
         }
+    }
+
+    private void checkPermissions() {
+        List<String> permissionList = new ArrayList<>();
+
+        for (String permission : permissions) {
+            int result = ContextCompat.checkSelfPermission(this, permission);
+            if (result != PackageManager.PERMISSION_GRANTED)  //사용자가 해당 권한을 가지고 있지 않을 경우 리스트에 해당 권한명 추가
+                permissionList.add(permission);
+        }
+
+        if (!permissionList.isEmpty())
+            ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), 101);
+
+        GPSUtil.ENABLE_GPS_INFO(this, locationListener);
     }
 
 }

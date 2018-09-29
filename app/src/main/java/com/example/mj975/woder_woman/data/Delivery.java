@@ -1,8 +1,13 @@
 package com.example.mj975.woder_woman.data;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Delivery {
+    @SerializedName("loc_name")
     private String name;
+    @SerializedName("address")
     private String address;
+    @SerializedName("delivery_num")
     private int postal;
 
     public Delivery(String name, String address, int postal) {

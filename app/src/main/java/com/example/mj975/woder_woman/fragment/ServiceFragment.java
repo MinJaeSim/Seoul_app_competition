@@ -25,13 +25,14 @@ public class ServiceFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_service, container, false);
 
         tabLayout = v.findViewById(R.id.tab);
-        tabLayout.addTab(tabLayout.newTab().setText("#지킴이 집"));
         tabLayout.addTab(tabLayout.newTab().setText("#안심 택배함"));
+        tabLayout.addTab(tabLayout.newTab().setText("#지킴이 집"));
         tabLayout.addTab(tabLayout.newTab().setText("#안심 스카우트"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
 
         viewPager = v.findViewById(R.id.viewPager);
+
 
         ServicePageAdapter pagerAdapter = new ServicePageAdapter(getChildFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);

@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.example.mj975.woder_woman.R;
 import com.example.mj975.woder_woman.data.Toilet;
 
-public class DangerZoneViewHolder extends AbstractViewHolder {
+public class DangerZoneViewHolder extends AbstractViewHolder<Toilet> {
     private TextView titleText;
     private TextView infoText;
 
@@ -18,9 +18,8 @@ public class DangerZoneViewHolder extends AbstractViewHolder {
     }
 
     @Override
-    public void onBindView(@NonNull Object item, int position) {
-        Toilet t = (Toilet) item;
-        titleText.setText(t.getContent());
-        infoText.setText(t.getOpenTime());
+    public void onBindView(@NonNull Toilet item, int position) {
+        titleText.setText(item.getContent());
+        infoText.setText(item.getOpenTime());
     }
 }

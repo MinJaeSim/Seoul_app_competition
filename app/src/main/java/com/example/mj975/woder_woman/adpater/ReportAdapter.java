@@ -12,7 +12,7 @@ import com.example.mj975.woder_woman.adpater.viewholder.ReportViewHolder;
 public class ReportAdapter<Report> extends AbstractRecyclerAdapter<Report> {
     @NonNull
     @Override
-    public AbstractViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public ReportViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.report_list_item, viewGroup, false);
         return new ReportViewHolder(view);
     }

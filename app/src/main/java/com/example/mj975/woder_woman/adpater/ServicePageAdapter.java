@@ -23,10 +23,10 @@ public class ServicePageAdapter extends FragmentStatePagerAdapter {
         Fragment fragment;
         switch (position) {
             case 0:
-                fragment = new ServiceSafeHouseFragment();
+                fragment = new ServiceDeliveryFragment();
                 return fragment;
             case 1:
-                fragment = new ServiceDeliveryFragment();
+                fragment = new ServiceSafeHouseFragment();
                 return fragment;
             case 2:
                 fragment = new ServiceScoutFragment();

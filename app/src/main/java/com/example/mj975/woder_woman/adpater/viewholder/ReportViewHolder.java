@@ -9,7 +9,7 @@ import com.example.mj975.woder_woman.R;
 import com.example.mj975.woder_woman.data.Report;
 import com.example.mj975.woder_woman.data.Toilet;
 
-public class ReportViewHolder extends AbstractViewHolder {
+public class ReportViewHolder extends AbstractViewHolder<Report> {
     private TextView titleText;
     private TextView infoText;
 
@@ -20,9 +20,8 @@ public class ReportViewHolder extends AbstractViewHolder {
     }
 
     @Override
-    public void onBindView(@NonNull Object item, int position) {
-        Report r = (Report) item;
-        String[] s = r.getAddress().split(" ");
+    public void onBindView(@NonNull Report item, int position) {
+        String[] s = item.getAddress().split(" ");
         if (s.length > 2) {
             titleText.setText(s[s.length - 1] + " " + s[s.length - 2]);
         }

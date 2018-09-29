@@ -25,10 +25,14 @@ public interface DatabaseAPI {
     @GET("delivery/all")
     Call<ArrayList<Delivery>> getAllDelivery();
 
+    @GET("delivery/search")
+    Call<ArrayList<Delivery>> getDeliveryList(@Query("addr") String query);
+
     @GET("safehouse/all")
     Call<ArrayList<SafeHouse>> getAllSafeHouse();
 
     @GET("scout/all")
     Call<ArrayList<Scout>> getAllScout();
+
 
 }

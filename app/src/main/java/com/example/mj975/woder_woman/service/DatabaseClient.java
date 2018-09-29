@@ -55,6 +55,11 @@ public class DatabaseClient implements DatabaseAPI {
     }
 
     @Override
+    public Call<ArrayList<Delivery>> getDeliveryList(String query) {
+        return api.getDeliveryList(query);
+    }
+
+    @Override
     public Call<ArrayList<SafeHouse>> getAllSafeHouse() {
         return api.getAllSafeHouse();
     }
