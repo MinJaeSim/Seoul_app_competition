@@ -52,7 +52,18 @@ public class MainFragment extends Fragment {
         ViewPager viewPager = v.findViewById(R.id.viewPager);
 
         TextView reportAlert = v.findViewById(R.id.report_view_alert);
-        TextView expeditionAlert = v.findViewById(R.id.expedition_view_alert);
+//        TextView expeditionAlert = v.findViewById(R.id.expedition_view_alert);
+        TextView expedtitionBoard = v.findViewById(R.id.expedition_board);
+        expedtitionBoard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ExpeditionBoardFragment f= new ExpeditionBoardFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, f)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
         TextView dangerAlert = v.findViewById(R.id.danger_view_alert);
 
         String[] src = {""};
@@ -88,19 +99,19 @@ public class MainFragment extends Fragment {
 
 
         RecyclerView dangerRecyclerView = v.findViewById(R.id.danger_view);
-        RecyclerView expeditionRecyclerView = v.findViewById(R.id.expedition_view);
+//        RecyclerView expeditionRecyclerView = v.findViewById(R.id.expedition_view);
         RecyclerView myReportRecyclerView = v.findViewById(R.id.my_report_view);
 
         LinearLayoutManager layoutManagerDanger = new LinearLayoutManager(getContext());
-        LinearLayoutManager layoutManagerExpedition = new LinearLayoutManager(getContext());
+//        LinearLayoutManager layoutManagerExpedition = new LinearLayoutManager(getContext());
         LinearLayoutManager layoutManagerReport = new LinearLayoutManager(getContext());
 
         layoutManagerDanger.setOrientation(LinearLayoutManager.HORIZONTAL);
-        layoutManagerExpedition.setOrientation(LinearLayoutManager.HORIZONTAL);
+//        layoutManagerExpedition.setOrientation(LinearLayoutManager.HORIZONTAL);
         layoutManagerReport.setOrientation(LinearLayoutManager.HORIZONTAL);
 
         dangerRecyclerView.setLayoutManager(layoutManagerDanger);
-        expeditionRecyclerView.setLayoutManager(layoutManagerExpedition);
+//        expeditionRecyclerView.setLayoutManager(layoutManagerExpedition);
         myReportRecyclerView.setLayoutManager(layoutManagerReport);
 
         DangerZoneAdapter dangerZoneAdapter = new DangerZoneAdapter();
@@ -119,26 +130,24 @@ public class MainFragment extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-            FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                    .setTimestampsInSnapshotsEnabled(true)
-                    .build();
-            firestore.setFirestoreSettings(settings);
+//            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+//            FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+//                    .setTimestampsInSnapshotsEnabled(true)
+//                    .build();
+//            firestore.setFirestoreSettings(settings);
             Query dbRef = db.collection("Report").whereEqualTo("email", user.getEmail());
-            dbRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                            reports.add(doc.toObject(Report.class));
-                        }
-                        reportAdapter.setItems(reports);
-                        reportAdapter.notifyDataSetChanged();
-                        reportAlert.setVisibility(View.GONE);
-                        myReportRecyclerView.setVisibility(View.VISIBLE);
-                    } else {
-                        Snackbar.make(getView(), "정보를 읽어오는데 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
+            dbRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        reports.add(doc.toObject(Report.class));
                     }
+                    reportAdapter.setItems(reports);
+                    reportAdapter.notifyDataSetChanged();
+                    reportAlert.setVisibility(View.GONE);
+                    myReportRecyclerView.setVisibility(View.VISIBLE);
+                    PersonFragment.reportNum = reports.size();
+                } else {
+                    Snackbar.make(getView(), "정보를 읽어오는데 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
                 }
             });
         } else {
@@ -147,6 +156,7 @@ public class MainFragment extends Fragment {
 
         TabLayout tabLayout = v.findViewById(R.id.tab_dots);
         tabLayout.setupWithViewPager(viewPager);
+
 
         return v;
     }

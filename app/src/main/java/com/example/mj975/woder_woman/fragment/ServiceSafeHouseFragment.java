@@ -12,24 +12,24 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.mj975.woder_woman.R;
 import com.example.mj975.woder_woman.data.SafeHouse;
 import com.example.mj975.woder_woman.service.DatabaseClient;
+import com.example.mj975.woder_woman.service.SafePlaceIconGenerator;
 import com.example.mj975.woder_woman.util.GPSUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import net.sharewire.googlemapsclustering.ClusterManager;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceSafeHouseFragment extends Fragment implements OnMapReadyCallback {
@@ -138,7 +138,7 @@ public class ServiceSafeHouseFragment extends Fragment implements OnMapReadyCall
         this.googleMap = googleMap;
 
         clusterManager = new ClusterManager<>(getActivity().getBaseContext(), this.googleMap);
-        clusterManager.setIconGenerator(new com.example.mj975.woder_woman.service.DefaultIconGenerator<>(getContext()));
+        clusterManager.setIconGenerator(new SafePlaceIconGenerator<>(getContext(), null, BitmapDescriptorFactory.fromResource(R.drawable.safe_house)));
         LatLng SEOUL = new LatLng(37.56, 126.97);
 
         this.googleMap.setOnCameraIdleListener(clusterManager);

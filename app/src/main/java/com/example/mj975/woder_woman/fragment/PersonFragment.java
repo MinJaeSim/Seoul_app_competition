@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -31,10 +32,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mj975.woder_woman.R;
 import com.example.mj975.woder_woman.activity.SignInActivity;
+import com.example.mj975.woder_woman.data.Report;
+import com.example.mj975.woder_woman.data.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +52,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class PersonFragment extends Fragment {
 
@@ -59,21 +70,31 @@ public class PersonFragment extends Fragment {
     private static final int MULTIPLE_PERMISSIONS = 101;
     private static final int LOGIN = 8;
 
-    private ImageView photoButton;
+    private ImageView profilPhoto;
     private Button loginButton;
     private LinearLayout linearLayout;
+    private String uploadUrl;
 
     private FirebaseUser user;
+    private FirebaseFirestore db;
+
+    public static int reportNum = 0;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_person, container, false);
+        db = FirebaseFirestore.getInstance();
 
-        photoButton = v.findViewById(R.id.profile_image);
+        profilPhoto = v.findViewById(R.id.profile_image);
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         TextView photoChangeButton = v.findViewById(R.id.profile_image_change_button);
         photoChangeButton.setOnClickListener(view -> {
+            if (user == null) {
+                Snackbar.make(view, "로그인 해주세요", Snackbar.LENGTH_SHORT).show();
+                return;
+            }
             checkPermissions();
             setPopupMenu();
         });
@@ -85,10 +106,26 @@ public class PersonFragment extends Fragment {
         });
         linearLayout = v.findViewById(R.id.profile);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        TextView profileName = v.findViewById(R.id.profile_name);
+        TextView profileEmail = v.findViewById(R.id.profile_email);
+        TextView profileReport = v.findViewById(R.id.profile_repoet_num);
+
         if (user != null) {
             loginButton.setVisibility(View.GONE);
             linearLayout.setVisibility(View.VISIBLE);
+            db.collection("User").document(user.getEmail())
+                    .get().addOnSuccessListener(documentSnapshot -> {
+                User u = documentSnapshot.toObject(User.class);
+                profileName.setText(":  " + u.getName());
+                profileEmail.setText(":  " + u.getEmail());
+                profileReport.setText(":  " + reportNum + " 번");
+                Glide.with(profilPhoto)
+                        .load(u.getProfileImage())
+                        .apply(new RequestOptions()
+                                .centerInside()
+                        )
+                        .into(profilPhoto);
+            });
         } else {
             loginButton.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
@@ -102,13 +139,52 @@ public class PersonFragment extends Fragment {
         });
 
         TextView signOutButton = v.findViewById(R.id.sign_out);
+        signOutButton.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            loginButton.setVisibility(View.VISIBLE);
+            linearLayout.setVisibility(View.GONE);
+        });
 
         TextView inquiryButton = v.findViewById(R.id.inquiry_button);
+        inquiryButton.setOnClickListener(view -> Snackbar.make(view, "업데이트 예정입니다.", Snackbar.LENGTH_SHORT).show());
         TextView openSourceButton = v.findViewById(R.id.open_source_button);
+        openSourceButton.setOnClickListener(view -> Snackbar.make(view, "업데이트 예정입니다.", Snackbar.LENGTH_SHORT).show());
+
+        TextView expedition = v.findViewById(R.id.expedition_tab);
+        expedition.setOnClickListener(view -> Snackbar.make(view, "업데이트 예정입니다.", Snackbar.LENGTH_SHORT).show());
+
+        TextView myReportShow = v.findViewById(R.id.total_report);
+        myReportShow.setOnClickListener(view -> Snackbar.make(view, "업데이트 예정입니다.", Snackbar.LENGTH_SHORT).show());
 
         return v;
     }
 
+    private void uploadImages(Uri photoUri) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageReference = storage.getReferenceFromUrl("gs://aunager.appspot.com").child("profile").child(generateTempFilename());
+        storageReference.putFile(photoUri).continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                Snackbar.make(getView(), "프로필 변경에 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
+            }
+            return storageReference.getDownloadUrl();
+        }).addOnCompleteListener(task -> {
+            uploadUrl = task.getResult().toString();
+
+            db.collection("User").document(user.getEmail())
+                    .update("progileImage", uploadUrl)
+                    .addOnSuccessListener(aVoid -> {
+                        profilPhoto.setImageURI(photoUri);
+                        Snackbar.make(getView(), "프로필 변경에 성공하였습니다.", Snackbar.LENGTH_SHORT).show();
+                    }).addOnFailureListener(e -> {
+                Snackbar.make(getView(), "프로필 변경에 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
+            });
+        });
+    }
+
+    private String generateTempFilename() {
+        return UUID.randomUUID().toString();
+    }
 
     private void checkPermissions() {
         List<String> permissionList = new ArrayList<>();
@@ -125,7 +201,7 @@ public class PersonFragment extends Fragment {
     }
 
     private void setPopupMenu() {
-        PopupMenu popup = new PopupMenu(getActivity(), photoButton);
+        PopupMenu popup = new PopupMenu(getActivity(), profilPhoto);
         popup.getMenuInflater()
                 .inflate(R.menu.camera_popup_menu, popup.getMenu());
 
@@ -145,9 +221,7 @@ public class PersonFragment extends Fragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File photoFile = null;
         try {
-            System.out.println("asdf");
             photoFile = createImageFile();
-            System.out.println("qwer");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -199,7 +273,7 @@ public class PersonFragment extends Fragment {
                         });
             } else if (requestCode == CROP_FROM_CAMERA) {
                 try {
-                    photoButton.setImageURI(photoUri);
+                    uploadImages(photoUri);
                 } catch (Exception e) {
                     Log.e("ERROR", e.getMessage());
                 }

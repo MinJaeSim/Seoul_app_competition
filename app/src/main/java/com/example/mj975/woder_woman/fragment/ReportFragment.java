@@ -120,6 +120,8 @@ public class ReportFragment extends Fragment {
             reportButton.setText("로그인 해주세요");
         }
 
+        db = FirebaseFirestore.getInstance();
+
         reportButton.setOnClickListener(view -> {
             String addr = addressText.getText().toString();
             String detailAddr = detailAddressText.getText().toString();

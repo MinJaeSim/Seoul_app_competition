@@ -13,11 +13,13 @@
         <TextView
             android:id="@+id/main_title"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_height="50dp"
+            android:textColor="@color/colorWhite"
             android:text="@string/main_title"
             android:textAlignment="center"
-            android:textSize="32sp"
+            android:background="@color/colorHighLightRed"
+            android:textSize="22sp"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -104,40 +106,43 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+
             app:layout_constraintTop_toBottomOf="@id/near_danger_zon">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorDehighLightRed"
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/expedition_board"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="원더우먼 원정대"
-                    android:textAlignment="textStart"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:id="@+id/expedition_view_alert"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginTop="6dp"
+                    android:layout_height="88dp"
+                    android:textColor="@color/colorWhite"
+                    android:text="원더우먼 원정대 게시판"
+                    android:textAlignment="center"
                     android:gravity="center_vertical"
-                    android:text="데이터를 읽어오고 있습니다." />
+                    android:textSize="28sp" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/expedition_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginTop="6dp"
-                    android:visibility="gone" />
+                <!--<TextView-->
+                <!--android:id="@+id/expedition_view_alert"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:layout_marginEnd="2dp"-->
+                <!--android:layout_marginStart="2dp"-->
+                <!--android:layout_marginTop="6dp"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="데이터를 읽어오고 있습니다." />-->
+
+                <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:id="@+id/expedition_view"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:layout_marginEnd="2dp"-->
+                <!--android:layout_marginStart="2dp"-->
+                <!--android:layout_marginTop="6dp"-->
+                <!--android:visibility="gone" />-->
             </LinearLayout>
         </android.support.design.card.MaterialCardView>
 

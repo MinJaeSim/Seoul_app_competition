@@ -82,10 +82,9 @@ public class SignUpActivity extends AppCompatActivity {
                                 User user = new User(email, name, age, "");
 
                                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                db.collection("User").document()
+                                db.collection("User").document(email)
                                         .set(user)
                                         .addOnSuccessListener(aVoid -> {
-                                            dialog.dismiss();
                                             Snackbar.make(view, "회원가입에 성공하였습니다.", Snackbar.LENGTH_SHORT).show();
                                         }).addOnFailureListener(e -> {
                                     dialog.dismiss();

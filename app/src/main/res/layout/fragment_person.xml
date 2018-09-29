@@ -52,6 +52,7 @@
                 android:text="이름" />
 
             <TextView
+                android:id="@+id/profile_name"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
@@ -69,9 +70,10 @@
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="아이디" />
+                android:text="이메일" />
 
             <TextView
+                android:id="@+id/profile_email"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
@@ -92,6 +94,7 @@
                 android:text="신고 횟수" />
 
             <TextView
+                android:id="@+id/profile_repoet_num"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
@@ -164,6 +167,68 @@
             android:textSize="16sp" />
     </LinearLayout>
 
+
+
+    <TextView
+        android:id="@+id/line3"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        android:background="#dddddd"
+        android:text="  활동"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/account" />
+
+    <LinearLayout
+        android:id="@+id/activity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line3">
+
+        <TextView
+            android:id="@+id/expedition_tab"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:text="나의 원더우먼 원정 기록"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:background="#aaaaaa" />
+
+        <TextView
+            android:id="@+id/total_report"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:text="전체 신고 내역"
+            android:textSize="16sp" />
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_marginTop="2dp"-->
+            <!--android:background="#aaaaaa" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/sign_out"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:text="회원탈퇴"-->
+            <!--android:textSize="16sp" />-->
+    </LinearLayout>
+
     <TextView
         android:id="@+id/line2"
         android:layout_width="0dp"
@@ -173,7 +238,7 @@
         android:text="  앱 정보"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/account" />
+        app:layout_constraintTop_toBottomOf="@+id/activity" />
 
     <LinearLayout
         android:id="@+id/app_info"
@@ -240,15 +305,6 @@
             android:text="오픈소스 라이센스"
             android:textSize="16sp" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/line3"
-        android:layout_width="0dp"
-        android:layout_height="4dp"
-        android:background="#dddddd"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_info" />
 
 
 </android.support.constraint.ConstraintLayout>

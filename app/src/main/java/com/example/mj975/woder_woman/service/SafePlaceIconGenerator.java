@@ -23,7 +23,7 @@ import net.sharewire.googlemapsclustering.IconGenerator;
 import net.sharewire.googlemapsclustering.IconStyle;
 
 
-public class DefaultIconGenerator<T extends ClusterItem> implements IconGenerator<T> {
+public class SafePlaceIconGenerator<T extends ClusterItem> implements IconGenerator<T> {
 
     private static final int[] CLUSTER_ICON_BUCKETS = {10, 20, 50, 100, 500, 1000, 5000, 10000, 20000};
 
@@ -32,14 +32,17 @@ public class DefaultIconGenerator<T extends ClusterItem> implements IconGenerato
     private IconStyle mIconStyle;
 
     private BitmapDescriptor mClusterItemIcon;
+    private BitmapDescriptor mClusterIcon;
 
     private final SparseArray<BitmapDescriptor> mClusterIcons = new SparseArray<>();
 
     /**
      * Creates an icon generator with the default icon style.
      */
-    public DefaultIconGenerator(@NonNull Context context) {
+    public SafePlaceIconGenerator(@NonNull Context context, BitmapDescriptor cluster, BitmapDescriptor marker) {
         mContext = context;
+        this.mClusterIcon = cluster;
+        this.mClusterItemIcon = marker;
         setIconStyle(createDefaultIconStyle());
     }
 
@@ -54,27 +57,33 @@ public class DefaultIconGenerator<T extends ClusterItem> implements IconGenerato
 
     @NonNull
     public BitmapDescriptor getClusterIcon(@NonNull Cluster<T> cluster) {
-        int clusterBucket = getClusterIconBucket(cluster);
-        BitmapDescriptor clusterIcon = mClusterIcons.get(clusterBucket);
+        if(mClusterIcon == null) {
+            int clusterBucket = getClusterIconBucket(cluster);
+            BitmapDescriptor clusterIcon = mClusterIcons.get(clusterBucket);
 
-        if (clusterIcon == null) {
-            clusterIcon = createClusterIcon(clusterBucket);
-            mClusterIcons.put(clusterBucket, clusterIcon);
+            if (clusterIcon == null) {
+                clusterIcon = createClusterIcon(clusterBucket);
+                mClusterIcons.put(clusterBucket, clusterIcon);
+            }
+            return clusterIcon;
+        } else {
+            return mClusterIcon;
         }
-
-        return clusterIcon;
     }
 
     @NonNull
     @Override
     public BitmapDescriptor getClusterItemIcon(@NonNull T clusterItem) {
+        if(mClusterIcon == null) {
+//        BitmapDescriptor mClusterItemIcon = BitmapDescriptorFactory.fromResource(R.drawable.safe_place);
 
-        BitmapDescriptor mClusterItemIcon = BitmapDescriptorFactory.fromResource(R.drawable.safe_place);
-
-        if (mClusterItemIcon == null) {
-            mClusterItemIcon = createClusterItemIcon();
+            if (mClusterItemIcon == null) {
+                mClusterItemIcon = createClusterItemIcon();
+            }
+            return mClusterItemIcon;
+        } else {
+            return mClusterIcon;
         }
-        return mClusterItemIcon;
     }
 
     @NonNull

@@ -14,12 +14,14 @@ import android.view.ViewGroup;
 
 import com.example.mj975.woder_woman.R;
 import com.example.mj975.woder_woman.data.Toilet;
+import com.example.mj975.woder_woman.service.SafePlaceIconGenerator;
 import com.example.mj975.woder_woman.util.GPSUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -136,7 +138,7 @@ public class CleanMapFragment extends Fragment implements OnMapReadyCallback {
         this.googleMap = googleMap;
 
         clusterManager = new ClusterManager<>(getActivity().getBaseContext(), this.googleMap);
-        clusterManager.setIconGenerator(new com.example.mj975.woder_woman.service.DefaultIconGenerator<>(getContext()));
+        clusterManager.setIconGenerator(new SafePlaceIconGenerator<>(getContext(),null, BitmapDescriptorFactory.fromResource(R.drawable.safe_place)));
         LatLng SEOUL = new LatLng(37.56, 126.97);
 
         this.googleMap.setOnCameraIdleListener(clusterManager);
