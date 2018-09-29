@@ -73,6 +73,15 @@
                     android:textAlignment="textStart"
                     android:textSize="24sp" />
 
+                <TextView
+                    android:id="@+id/danger_view_alert"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
+                    android:text="데이터를 읽어오고 있습니다." />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/danger_view"
@@ -80,7 +89,8 @@
                     android:layout_height="80dp"
                     android:layout_marginEnd="2dp"
                     android:layout_marginStart="2dp"
-                    android:layout_marginTop="6dp" />
+                    android:layout_marginTop="6dp"
+                    android:visibility="gone" />
             </LinearLayout>
 
         </android.support.design.card.MaterialCardView>
@@ -110,13 +120,24 @@
                     android:textAlignment="textStart"
                     android:textSize="24sp" />
 
+                <TextView
+                    android:id="@+id/expedition_view_alert"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
+                    android:text="데이터를 읽어오고 있습니다." />
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/expedition_view"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:layout_marginEnd="2dp"
                     android:layout_marginStart="2dp"
-                    android:layout_marginTop="6dp" />
+                    android:layout_marginTop="6dp"
+                    android:visibility="gone" />
             </LinearLayout>
         </android.support.design.card.MaterialCardView>
 
@@ -145,14 +166,24 @@
                     android:textAlignment="textStart"
                     android:textSize="24sp" />
 
-                <android.support.v7.widget.RecyclerView
+                <TextView
+                    android:id="@+id/report_view_alert"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
+                    android:text="데이터를 읽어오고 있습니다." />
 
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/my_report_view"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:layout_marginEnd="2dp"
                     android:layout_marginStart="2dp"
-                    android:layout_marginTop="6dp" />
+                    android:layout_marginTop="6dp"
+                    android:visibility="gone" />
             </LinearLayout>
         </android.support.design.card.MaterialCardView>
 

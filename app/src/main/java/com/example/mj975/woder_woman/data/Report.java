@@ -10,11 +10,12 @@ public class Report {
     public Report() {
     }
 
-    public Report(String address, String detailAddress, String content, String uri) {
+    public Report(String address, String detailAddress, String content, String uri, String email) {
         this.address = address;
         this.detailAddress = detailAddress;
         this.content = content;
         this.uri = uri;
+        this.email = email;
     }
 
     public String getAddress() {
@@ -47,5 +48,13 @@ public class Report {
 
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

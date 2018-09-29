@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.mj975.woder_woman.fragment.ServiceDeliveryFragment;
-import com.example.mj975.woder_woman.fragment.ServiceGuardFragment;
+import com.example.mj975.woder_woman.fragment.ServiceSafeHouseFragment;
 import com.example.mj975.woder_woman.fragment.ServiceScoutFragment;
 
 public class ServicePageAdapter extends FragmentStatePagerAdapter {
@@ -23,7 +23,7 @@ public class ServicePageAdapter extends FragmentStatePagerAdapter {
         Fragment fragment;
         switch (position) {
             case 0:
-                fragment = new ServiceGuardFragment();
+                fragment = new ServiceSafeHouseFragment();
                 return fragment;
             case 1:
                 fragment = new ServiceDeliveryFragment();

@@ -4,8 +4,9 @@ import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 
 import com.example.mj975.woder_woman.adpater.viewholder.AbstractViewHolder;
+import com.example.mj975.woder_woman.data.Expedition;
 
-public class ExpeditionAdapter<ExpeditionViewHolder> extends AbstractRecyclerAdapter<ExpeditionViewHolder> {
+public class ExpeditionAdapter<Expedition> extends AbstractRecyclerAdapter<Expedition> {
 
     @NonNull
     @Override

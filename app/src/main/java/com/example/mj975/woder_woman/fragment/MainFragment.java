@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -14,15 +15,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mj975.woder_woman.R;
 import com.example.mj975.woder_woman.adpater.DangerZoneAdapter;
 import com.example.mj975.woder_woman.adpater.ImageViewPageAdapter;
+import com.example.mj975.woder_woman.adpater.ReportAdapter;
 import com.example.mj975.woder_woman.data.Event;
+import com.example.mj975.woder_woman.data.Report;
 import com.example.mj975.woder_woman.data.Toilet;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -38,7 +50,9 @@ public class MainFragment extends Fragment {
 
         ViewPager viewPager = v.findViewById(R.id.viewPager);
 
-        Toast.makeText(getContext(), FirebaseAuth.getInstance().getCurrentUser().getEmail().toString(), Toast.LENGTH_SHORT).show();
+        TextView reportAlert = v.findViewById(R.id.report_view_alert);
+        TextView expeditionAlert = v.findViewById(R.id.expedition_view_alert);
+        TextView dangerAlert = v.findViewById(R.id.danger_view_alert);
 
         String[] src = {""};
 
@@ -68,9 +82,7 @@ public class MainFragment extends Fragment {
         }
 
         if (bundle != null && bundle.getSerializable("NEAR") != null) {
-            System.out.println("TEST");
             toilets = (ArrayList<Toilet>) bundle.getSerializable("NEAR");
-            System.out.println(toilets.size());
         }
 
 
@@ -91,8 +103,41 @@ public class MainFragment extends Fragment {
         myReportRecyclerView.setLayoutManager(layoutManagerReport);
 
         DangerZoneAdapter dangerZoneAdapter = new DangerZoneAdapter();
-        dangerZoneAdapter.setItems(toilets);
+        if (toilets.size() < 1) {
+            dangerAlert.setText("근처에 등록된 화장실이 없습니다.");
+        } else {
+            dangerZoneAdapter.setItems(toilets);
+            dangerAlert.setVisibility(View.GONE);
+            dangerRecyclerView.setVisibility(View.VISIBLE);
+        }
         dangerRecyclerView.setAdapter(dangerZoneAdapter);
+
+        ReportAdapter reportAdapter = new ReportAdapter();
+        myReportRecyclerView.setAdapter(reportAdapter);
+        ArrayList<Report> reports = new ArrayList<>();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            Query dbRef = db.collection("Report").whereEqualTo("email", user.getEmail());
+            dbRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            reports.add(doc.toObject(Report.class));
+                        }
+                        reportAdapter.setItems(reports);
+                        reportAdapter.notifyDataSetChanged();
+                        reportAlert.setVisibility(View.GONE);
+                        myReportRecyclerView.setVisibility(View.VISIBLE);
+                    } else {
+                        Snackbar.make(getView(), "정보를 읽어오는데 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        } else {
+            reportAlert.setText("로그인 해주세요.");
+        }
 
         TabLayout tabLayout = v.findViewById(R.id.tab_dots);
         tabLayout.setupWithViewPager(viewPager);

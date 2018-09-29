@@ -1,6 +1,9 @@
 package com.example.mj975.woder_woman.service;
 
+import com.example.mj975.woder_woman.data.Delivery;
 import com.example.mj975.woder_woman.data.Event;
+import com.example.mj975.woder_woman.data.SafeHouse;
+import com.example.mj975.woder_woman.data.Scout;
 import com.example.mj975.woder_woman.data.Toilet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,6 +47,21 @@ public class DatabaseClient implements DatabaseAPI {
     @Override
     public Call<ArrayList<Toilet>> getNearToilets(float lat, float lng) {
         return api.getNearToilets(lat, lng);
+    }
+
+    @Override
+    public Call<ArrayList<Delivery>> getAllDelivery() {
+        return api.getAllDelivery();
+    }
+
+    @Override
+    public Call<ArrayList<SafeHouse>> getAllSafeHouse() {
+        return api.getAllSafeHouse();
+    }
+
+    @Override
+    public Call<ArrayList<Scout>> getAllScout() {
+        return api.getAllScout();
     }
 
     private static class SingleTon {

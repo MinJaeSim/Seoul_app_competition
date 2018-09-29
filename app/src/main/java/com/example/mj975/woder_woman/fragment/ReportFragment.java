@@ -97,8 +97,6 @@ public class ReportFragment extends Fragment {
         if (bundle != null) {
             latitude = bundle.getDouble("LAT", 37.56);
             longitude = bundle.getDouble("LNG", 126.97);
-            System.out.println("TEST1 " + latitude);
-            System.out.println("TEST2 " + longitude);
         }
 
         Button getAddressButton = v.findViewById(R.id.get_address);
@@ -113,7 +111,15 @@ public class ReportFragment extends Fragment {
             setPopupMenu();
         });
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Button reportButton = v.findViewById(R.id.report_button);
+
+        if (user == null) {
+            reportButton.setBackgroundColor(getResources().getColor(R.color.colorGray));
+            reportButton.setEnabled(false);
+            reportButton.setText("로그인 해주세요");
+        }
+
         reportButton.setOnClickListener(view -> {
             String addr = addressText.getText().toString();
             String detailAddr = detailAddressText.getText().toString();
@@ -126,24 +132,12 @@ public class ReportFragment extends Fragment {
                 dialog.setMessage("신고 진행 중 입니다.");
                 dialog.show();
 
-                Report report = new Report(addr, detailAddr, content, "");
+                Report report = new Report(addr, detailAddr, content, "", user.getEmail());
                 showReportDialog(report);
 
             } else
                 Snackbar.make(view, "내용을 입력해 주세요", Snackbar.LENGTH_SHORT).show();
         });
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            reportButton.setBackgroundColor(getResources().getColor(R.color.colorGray));
-            reportButton.setEnabled(false);
-            reportButton.setText("로그인 해주세요");
-        }
-        db = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-        db.setFirestoreSettings(settings);
 
         return v;
     }

@@ -10,24 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mj975.woder_woman.R;
-import com.example.mj975.woder_woman.activity.SplashActivity;
-import com.example.mj975.woder_woman.data.Delivery;
-import com.example.mj975.woder_woman.data.Event;
+import com.example.mj975.woder_woman.data.Scout;
 import com.example.mj975.woder_woman.service.DatabaseClient;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
-public class ServiceDeliveryFragment extends Fragment {
+public class ServiceSafeHouseFragment extends Fragment {
 
-    private ArrayList<Delivery> list;
+    private List<Scout> list;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_service_delivery, container, false);
-
-        
+        View v = inflater.inflate(R.layout.fragment_service_safe_house,container,false);
 
         return v;
     }
@@ -43,7 +39,7 @@ public class ServiceDeliveryFragment extends Fragment {
         protected Void doInBackground(Void... arg0) {
 
             try {
-                list = DatabaseClient.getInstance().getAllDelivery().execute().body();
+                list = DatabaseClient.getInstance().getAllScout().execute().body();
             } catch (IOException e) {
                 e.printStackTrace();
             }
