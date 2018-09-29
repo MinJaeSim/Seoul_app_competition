@@ -100,8 +100,8 @@ public class ServiceSafeHouseFragment extends Fragment implements OnMapReadyCall
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onStart() {
+        super.onStart();
         dialog = new ProgressDialog(getContext());
         dialog.setMessage("데이터를 읽어오는 중입니다.");
         dialog.show();

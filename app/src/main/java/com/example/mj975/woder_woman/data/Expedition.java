@@ -1,8 +1,9 @@
 package com.example.mj975.woder_woman.data;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Expedition {
+public class Expedition implements Serializable {
     private String email;
     private String location;
     private String time;

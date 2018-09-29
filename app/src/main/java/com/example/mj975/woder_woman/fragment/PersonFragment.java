@@ -36,12 +36,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mj975.woder_woman.R;
 import com.example.mj975.woder_woman.activity.SignInActivity;
-import com.example.mj975.woder_woman.data.Report;
 import com.example.mj975.woder_woman.data.User;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.mj975.woder_woman.util.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -162,7 +160,7 @@ public class PersonFragment extends Fragment {
     private void uploadImages(Uri photoUri) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
-        StorageReference storageReference = storage.getReferenceFromUrl("gs://aunager.appspot.com").child("profile").child(generateTempFilename());
+        StorageReference storageReference = storage.getReferenceFromUrl(Constants.STORAGE_URL).child("profile").child(generateTempFilename());
         storageReference.putFile(photoUri).continueWithTask(task -> {
             if (!task.isSuccessful()) {
                 Snackbar.make(getView(), "프로필 변경에 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
@@ -172,7 +170,7 @@ public class PersonFragment extends Fragment {
             uploadUrl = task.getResult().toString();
 
             db.collection("User").document(user.getEmail())
-                    .update("progileImage", uploadUrl)
+                    .update("profileImage", uploadUrl)
                     .addOnSuccessListener(aVoid -> {
                         profilPhoto.setImageURI(photoUri);
                         Snackbar.make(getView(), "프로필 변경에 성공하였습니다.", Snackbar.LENGTH_SHORT).show();
@@ -297,12 +295,17 @@ public class PersonFragment extends Fragment {
                     Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         Intent intent = new Intent("com.android.camera.action.CROP");
+
         intent.setDataAndType(photoUri, "image/*");
 
         List<ResolveInfo> list = getActivity().getPackageManager().queryIntentActivities(intent, 0);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            getActivity().grantUriPermission(list.get(0).activityInfo.packageName, photoUri,
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            getActivity().getApplicationContext()
+                    .grantUriPermission(list.get(1)
+                                    .activityInfo
+                                    .packageName,
+                            photoUri,
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
 
         int size = list.size();
@@ -344,7 +347,7 @@ public class PersonFragment extends Fragment {
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString()); //Bitmap 형태로 받기 위해 해당 작업 진행
 
             Intent i = new Intent(intent);
-            ResolveInfo res = list.get(0);
+            ResolveInfo res = list.get(1);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
                 i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

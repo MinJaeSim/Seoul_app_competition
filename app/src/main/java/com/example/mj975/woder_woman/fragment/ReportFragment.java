@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.example.mj975.woder_woman.R;
 import com.example.mj975.woder_woman.data.Event;
 import com.example.mj975.woder_woman.data.Report;
+import com.example.mj975.woder_woman.util.Constants;
 import com.example.mj975.woder_woman.util.GPSUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -147,7 +148,7 @@ public class ReportFragment extends Fragment {
     private void uploadImages(Uri photoUri, Report report) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
-        StorageReference storageReference = storage.getReferenceFromUrl("gs://aunager.appspot.com").child("report").child(generateTempFilename());
+        StorageReference storageReference = storage.getReferenceFromUrl(Constants.STORAGE_URL).child("report").child(generateTempFilename());
         storageReference.putFile(photoUri).continueWithTask(task -> {
             if (!task.isSuccessful()) {
                 dialog.dismiss();
@@ -361,9 +362,9 @@ public class ReportFragment extends Fragment {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(photoUri, "image/*");
 
-        List<ResolveInfo> list = getActivity().getPackageManager().queryIntentActivities(intent, 0);
+        List<ResolveInfo> list = getActivity().getPackageManager().queryIntentActivities(intent, 1);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            getActivity().grantUriPermission(list.get(0).activityInfo.packageName, photoUri,
+            getActivity().grantUriPermission(list.get(1).activityInfo.packageName, photoUri,
                     Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
 
@@ -406,7 +407,7 @@ public class ReportFragment extends Fragment {
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString()); //Bitmap 형태로 받기 위해 해당 작업 진행
 
             Intent i = new Intent(intent);
-            ResolveInfo res = list.get(0);
+            ResolveInfo res = list.get(1);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
                 i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

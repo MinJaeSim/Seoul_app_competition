@@ -1,6 +1,8 @@
 package com.example.mj975.woder_woman.fragment;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -38,8 +40,9 @@ public class ExpeditionWriteDialogFragment extends DialogFragment {
                     String l = loc.getText().toString();
                     String t = time.getText().toString();
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    db.collection("board").document(email + l)
-                            .set(new Expedition(email, l, t, false, new ArrayList<String>()))
+                    Expedition e = new Expedition(email, l, t, false, new ArrayList<String>());
+                    db.collection("Board").document(email + l)
+                            .set(e)
                             .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
                                     Snackbar.make(view, "글 작성에 성공하였습니다.", Snackbar.LENGTH_SHORT).show();
@@ -47,6 +50,10 @@ public class ExpeditionWriteDialogFragment extends DialogFragment {
                                     Snackbar.make(view, "글 작성에 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
                                 }
                             });
+                    Intent intent = new Intent();
+                    intent.putExtra("EXPEDITION",e);
+                    getTargetFragment().onActivityResult(
+                            getTargetRequestCode(), Activity.RESULT_OK, intent);
                     dismiss();
                 } else {
                     Snackbar.make(getView(), "빈칸을 작성해 주세요.", Snackbar.LENGTH_SHORT).show();

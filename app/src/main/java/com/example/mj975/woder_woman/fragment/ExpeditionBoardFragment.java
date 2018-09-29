@@ -1,5 +1,7 @@
 package com.example.mj975.woder_woman.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,6 +40,9 @@ public class ExpeditionBoardFragment extends Fragment {
     private FirebaseFirestore db;
     private FirebaseUser user;
 
+    private ExpeditionAdapter adapter;
+    private List<Expedition> list;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,30 +56,29 @@ public class ExpeditionBoardFragment extends Fragment {
 
         FloatingActionButton writeButton = view.findViewById(R.id.write_button);
         writeButton.setOnClickListener(v -> {
-            if (user != null){
+            if (user != null) {
                 FragmentManager fm = getFragmentManager();
                 DialogFragment dialogFragment = ExpeditionWriteDialogFragment.newInstance(user.getEmail());
+                dialogFragment.setTargetFragment(ExpeditionBoardFragment.this, 100);
                 dialogFragment.show(fm, "InputDialog");
-            }
-            else
+
+            } else
                 Snackbar.make(getView(), "로그인 해주세요.", Snackbar.LENGTH_SHORT).show();
         });
 
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
 
-        ExpeditionAdapter adapter = new ExpeditionAdapter();
-        adapter.setOnItemClickListener(new AbstractRecyclerAdapter.OnItemClickListener<Expedition>() {
-            @Override
-            public void onItemClick(Expedition item, int position) {
-                if (user != null)
-                    showDialog(item);
-                else
-                    Snackbar.make(getView(), "로그인 해주세요.", Snackbar.LENGTH_SHORT).show();
-            }
+
+        adapter = new ExpeditionAdapter();
+        adapter.setOnItemClickListener((AbstractRecyclerAdapter.OnItemClickListener<Expedition>) (item, position) -> {
+            if (user != null)
+                showDialog(item);
+            else
+                Snackbar.make(getView(), "로그인 해주세요.", Snackbar.LENGTH_SHORT).show();
         });
 
-        List<Expedition> list = new ArrayList<>();
+        list = new ArrayList<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Board")
@@ -90,6 +94,7 @@ public class ExpeditionBoardFragment extends Fragment {
                         Snackbar.make(getView(), "정보를 읽어오는데 실패하였습니다.", Snackbar.LENGTH_SHORT).show();
                     }
                 });
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
@@ -119,5 +124,17 @@ public class ExpeditionBoardFragment extends Fragment {
         builder.show();
     }
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 100:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data != null) {
+                        list.add((Expedition) data.getSerializableExtra("EXPEDITION"));
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+                break;
+        }
+    }
 }
